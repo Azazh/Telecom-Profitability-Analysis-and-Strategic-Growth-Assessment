@@ -182,9 +182,6 @@ class ExploratoryDataAnalysis:
             
             # Provide insights
             print("\n=== Insights ===")
-            print("1. **Mean**: Represents the average value of a feature. For instance, the mean of 'Total Data' can give us an idea of average data usage per user.")
-            print("2. **Median**: Represents the middle value when data is sorted. Useful for understanding the central tendency, especially in the presence of outliers.")
-            print("3. **Standard Deviation**: Measures the spread of the data around the mean. High std deviation in 'Total Duration' or 'Total Data' may indicate varied user behavior.")
-            print("\nThese metrics provide insights into user behavior and help identify patterns or anomalies.")
+
         else:
             print("Cleaned data not available. Please clean the dataset first.")
