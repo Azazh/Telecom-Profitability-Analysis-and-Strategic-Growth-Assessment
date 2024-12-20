@@ -28,48 +28,53 @@ class UserBehaviorAnalysis:
         return self.processed_data
 
     def plot_aggregated_data(self):
-        """Plot and display the aggregated data."""
-        if self.processed_data is None:
-            print("Data is not aggregated yet. Call aggregate_user_data() first.")
-            return
+            """Plot and display the aggregated data."""
+            if self.processed_data is None:
+                print("Data is not aggregated yet. Call aggregate_user_data() first.")
+                return
+            
+            # Top 10 users by session duration
+            top_users_by_duration = self.processed_data.nlargest(10, "session_duration")
+            plt.figure(figsize=(12, 6))
+            plt.bar(
+                top_users_by_duration["MSISDN/Number"].astype(str),  # Ensure x-axis labels are strings
+                top_users_by_duration["session_duration"], 
+                color="skyblue"  # Optional: Add a color for better visibility
+            )
+            plt.xlabel("User Number")
+            plt.ylabel("Total Session Duration (ms)")
+            plt.title("Top 10 Users by Session Duration")
+            plt.xticks(rotation=45)
+            plt.grid(axis="y", linestyle="--", alpha=0.7)  # Add a grid for better readability
+            plt.tight_layout()
+            plt.show()
         
-        # Top 10 users by session duration
-        top_users_by_duration = self.processed_data.nlargest(10, "session_duration")
-        plt.figure(figsize=(12, 6))
-        plt.bar(top_users_by_duration["MSISDN/Number"], top_users_by_duration["session_duration"])
-        plt.xlabel("User Number")
-        plt.ylabel("Total Session Duration (ms)")
-        plt.title("Top 10 Users by Session Duration")
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.show()
-        
-        # Total download vs upload data
-        plt.figure(figsize=(12, 6))
-        plt.scatter(
-            self.processed_data["total_download"], 
-            self.processed_data["total_upload"], 
-            alpha=0.7
-        )
-        plt.xlabel("Total Download (Bytes)")
-        plt.ylabel("Total Upload (Bytes)")
-        plt.title("Download vs Upload Data per User")
-        plt.tight_layout()
-        plt.show()
-        
-        # Total volume per application
-        app_data = self.processed_data[
-            ["social_media_data", "google_data", "email_data", "youtube_data", 
-             "netflix_data", "gaming_data", "other_data"]
-        ].sum().sort_values(ascending=False)
-        plt.figure(figsize=(12, 6))
-        plt.bar(app_data.index, app_data.values)
-        plt.xlabel("Application")
-        plt.ylabel("Total Data Volume (Bytes)")
-        plt.title("Total Data Volume per Application")
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.show()
+            # Total download vs upload data
+            plt.figure(figsize=(12, 6))
+            plt.scatter(
+                self.processed_data["total_download"], 
+                self.processed_data["total_upload"], 
+                alpha=0.7
+            )
+            plt.xlabel("Total Download (Bytes)")
+            plt.ylabel("Total Upload (Bytes)")
+            plt.title("Download vs Upload Data per User")
+            plt.tight_layout()
+            plt.show()
+            
+            # Total volume per application
+            app_data = self.processed_data[
+                ["social_media_data", "google_data", "email_data", "youtube_data", 
+                "netflix_data", "gaming_data", "other_data"]
+            ].sum().sort_values(ascending=False)
+            plt.figure(figsize=(12, 6))
+            plt.bar(app_data.index, app_data.values)
+            plt.xlabel("Application")
+            plt.ylabel("Total Data Volume (Bytes)")
+            plt.title("Total Data Volume per Application")
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+            plt.show()
 
     def print_insights(self):
         """Print key insights based on the analysis."""
