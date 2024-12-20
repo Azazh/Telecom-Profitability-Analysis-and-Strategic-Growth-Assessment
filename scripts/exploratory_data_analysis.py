@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
 class ExploratoryDataAnalysis:
     def __init__(self, filepath):
@@ -10,6 +12,7 @@ class ExploratoryDataAnalysis:
         self.dataset = None
         self.cleaned_data = None
         self.data = pd.read_csv(filepath)
+        self.data.columns = self.data.columns.str.strip()
 
 
     def load_data(self):
@@ -185,3 +188,187 @@ class ExploratoryDataAnalysis:
 
         else:
             print("Cleaned data not available. Please clean the dataset first.")
+
+
+    def compute_dispersion(self):
+        numeric_data = self.data.select_dtypes(include=['float64', 'int64'])
+        stats = numeric_data.describe().T
+        stats['range'] = stats['max'] - stats['min']
+        stats['IQR'] = stats['75%'] - stats['25%']
+        return stats
+
+    def plot_univariate(self):
+        numeric_data = self.data.select_dtypes(include=['float64', 'int64'])
+        for col in numeric_data.columns:
+            plt.figure(figsize=(8, 4))
+            sns.histplot(self.data[col], kde=True)
+            plt.title(f'Univariate Analysis - {col}')
+            plt.show()
+    # def graphical_univariate_analysis(self):
+        """
+        Conduct graphical univariate analysis by plotting histograms and boxplots
+        for each quantitative variable.
+        """
+        if self.cleaned_data is not None:
+            for column in self.cleaned_data.select_dtypes(include=['float64', 'int64']).columns:
+                # Plot histogram
+                plt.figure(figsize=(10, 6))
+                sns.histplot(self.cleaned_data[column], kde=True, bins=20, color="blue")
+                plt.title(f"Histogram of {column}")
+                plt.xlabel(column)
+                plt.ylabel("Frequency")
+                plt.show()
+                
+                # Plot boxplot
+                plt.figure(figsize=(10, 6))
+                sns.boxplot(x=self.cleaned_data[column], color="orange")
+                plt.title(f"Boxplot of {column}")
+                plt.xlabel(column)
+                plt.show()
+                
+                print(f"\n=== Insights for {column} ===")
+                print(f"The histogram shows the distribution of {column}, while the boxplot highlights potential outliers.")
+        else:
+            print("Cleaned data not available. Please clean the dataset first.")
+    def univariate_analysis(self):
+        """
+        Conduct a non-graphical univariate analysis by computing dispersion parameters
+        and provide useful interpretation.
+        """
+        if self.cleaned_data is not None:
+            # Compute dispersion parameters
+            range_values = self.cleaned_data.max(numeric_only=True) - self.cleaned_data.min(numeric_only=True)
+            variance_values = self.cleaned_data.var(numeric_only=True)
+            std_dev_values = self.cleaned_data.std(numeric_only=True)
+
+            # Print results
+            print("=== Non-Graphical Univariate Analysis ===")
+            print("\nRange Values:")
+            print(range_values)
+            print("\nVariance Values:")
+            print(variance_values)
+            print("\nStandard Deviation Values:")
+            print(std_dev_values)
+            
+            # Interpretation
+            print("\n=== Interpretation ===")
+            print("1. **Range**: Indicates the spread of values for each variable.")
+            print("2. **Variance and Standard Deviation**: Measure the variability in the dataset. High values suggest greater variation, while low values indicate uniformity.")
+        else:
+            print("Cleaned data not available. Please clean the dataset first.")
+
+    def bivariate_analysis(self):
+        """
+        Conduct bivariate analysis by exploring the relationship between 
+        applications and Total Data (DL + UL).
+        """
+        if self.cleaned_data is not None:
+            # Update the column names to match the dataset
+            app_columns = [
+                "Social Media DL (Bytes)", "Google DL (Bytes)", "Email DL (Bytes)", 
+                "Youtube DL (Bytes)", "Netflix DL (Bytes)", "Gaming DL (Bytes)", 
+                "Other DL (Bytes)"
+            ]
+            
+            # Ensure 'Total DL (Bytes)' and 'Total UL (Bytes)' exist and calculate Total Data
+            if "Total DL (Bytes)" in self.cleaned_data.columns and "Total UL (Bytes)" in self.cleaned_data.columns:
+                self.cleaned_data["Total Data"] = self.cleaned_data["Total DL (Bytes)"] + self.cleaned_data["Total UL (Bytes)"]
+            
+            for app in app_columns:
+                if app in self.cleaned_data.columns:
+                    plt.figure(figsize=(10, 6))
+                    sns.scatterplot(
+                        x=self.cleaned_data[app],
+                        y=self.cleaned_data["Total Data"],
+                        color="green"
+                    )
+                    plt.title(f"Bivariate Analysis: {app} vs Total Data")
+                    plt.xlabel(app)
+                    plt.ylabel("Total Data (Bytes)")
+                    plt.show()
+                else:
+                    print(f"Column '{app}' not found in the dataset.")
+        else:
+            print("Cleaned data not available. Please clean the dataset first.")
+
+
+    def correlation_analysis(self):
+        """
+        Compute the correlation matrix for selected variables and interpret the findings.
+        """
+        if self.cleaned_data is not None:
+            # Correct column names from the dataset
+            columns = [
+                "Social Media DL (Bytes)", "Google DL (Bytes)", "Email DL (Bytes)", 
+                "Youtube DL (Bytes)", "Netflix DL (Bytes)", "Gaming DL (Bytes)", 
+                "Other DL (Bytes)"
+            ]
+            
+            # Ensure columns exist in the dataset
+            missing_columns = [col for col in columns if col not in self.cleaned_data.columns]
+            if missing_columns:
+                print(f"Missing columns in the dataset: {missing_columns}")
+                return
+
+            # Compute correlation matrix
+            correlation_matrix = self.cleaned_data[columns].corr()
+            
+            # Print correlation matrix
+            print("\n=== Correlation Matrix ===")
+            print(correlation_matrix)
+            
+            # Plot heatmap
+            plt.figure(figsize=(10, 8))
+            sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", fmt=".2f")
+            plt.title("Correlation Heatmap")
+            plt.show()
+            
+            print("\n=== Insights ===")
+            print("Correlation values close to 1 or -1 indicate strong positive or negative relationships.")
+            print("Values close to 0 indicate weak or no correlation.")
+        else:
+            print("Cleaned data not available. Please clean the dataset first.")
+
+
+    def dimensionality_reduction(self):
+        """
+        Perform Principal Component Analysis (PCA) for dimensionality reduction.
+        """
+        if self.cleaned_data is not None:
+            # Select numeric columns and standardize
+            numeric_data = self.cleaned_data.select_dtypes(include=['float64', 'int64'])
+            scaler = StandardScaler()
+            scaled_data = scaler.fit_transform(numeric_data)
+            
+            # Perform PCA
+            pca = PCA()
+            pca_data = pca.fit_transform(scaled_data)
+            
+            # Explained variance
+            explained_variance = pca.explained_variance_ratio_
+            print("\n=== PCA Explained Variance ===")
+            for i, variance in enumerate(explained_variance):
+                print(f"Principal Component {i + 1}: {variance:.2%}")
+            
+            # Plot explained variance
+            plt.figure(figsize=(10, 6))
+            plt.plot(
+                range(1, len(explained_variance) + 1),
+                explained_variance.cumsum(),
+                marker='o', linestyle='--', color='b'
+            )
+            plt.title("Explained Variance by Principal Components")
+            plt.xlabel("Number of Principal Components")
+            plt.ylabel("Cumulative Explained Variance")
+            plt.show()
+            
+            print("\n=== Insights ===")
+            print("PCA helps reduce dimensions while retaining most of the variability in the data.")
+            print("Select the number of components that explain a significant percentage (e.g., 95%) of the variance.")
+        else:
+            print("Cleaned data not available. Please clean the dataset first.")
+
+
+
+
+ 
