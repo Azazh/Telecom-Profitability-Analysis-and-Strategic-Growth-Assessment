@@ -1,10 +1,16 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+import db_config
+
 class UserOverviewAnalysis:
-    def __init__(self, dataset_path):
-        # Load the dataset
-        self.data = pd.read_csv(dataset_path)
+    def __init__(self, query):
+        """
+        Initialize the class with a SQL query to fetch data.
+        :param query: The SQL query to fetch the dataset.
+        """
+        # Load the dataset from the database
+        self.data = query
 
     def top_handsets(self, top_n=10):
         """Identify the top N handsets used by customers."""
