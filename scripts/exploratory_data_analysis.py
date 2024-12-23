@@ -11,14 +11,14 @@ class ExploratoryDataAnalysis:
         self.filepath = filepath
         self.dataset = None
         self.cleaned_data = None
-        self.data = pd.read_csv(filepath)
+        self.data = filepath
         self.data.columns = self.data.columns.str.strip()
 
 
     def load_data(self):
         """Load the dataset from a CSV file."""
         try:
-            self.dataset = pd.read_csv(self.filepath)
+            self.dataset = self.filepath
             print("Dataset loaded successfully.")
         except FileNotFoundError:
             print("File not found. Please provide the correct file path.")
