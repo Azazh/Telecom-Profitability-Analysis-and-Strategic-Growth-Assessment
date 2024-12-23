@@ -2,7 +2,9 @@ from sqlalchemy import create_engine
 import pandas as pd
 
 # PostgreSQL connection details
-DB_URL = "postgresql://postgres:5492460@localhost:5432/10-academy"
+# DB_URL = "postgresql://postgres:5492460@localhost:5432/10-academy"
+DB_URL = "postgresql://postgres:5492460@localhost:5432/telecom_analysis"
+
 
 def get_database_connection():
     """
