@@ -2,23 +2,16 @@ import sys
 import os
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../scripts"))
-import db_config
+import db_config_dashboard
 
 import streamlit as st
 import plotly.express as px
-
-# Database configuration
-DB_HOST = "your_host"
-DB_NAME = "your_database"
-DB_USER = "your_username"
-DB_PASSWORD = "your_password"
-# QUERY = "SELECT * FROM customer_satisfaction"
 
 # load dataset
 # SQL query to fetch the required dataset
 QUERY = "SELECT * FROM customer_satisfaction"
 # Initialize the analysis class with the SQL query
-data=db_config.fetch_data(QUERY)
+data=db_config_dashboard.fetch_data(QUERY)
 # Check if data is fetched successfully
 # Check if data is fetched successfully
 if data is not None:

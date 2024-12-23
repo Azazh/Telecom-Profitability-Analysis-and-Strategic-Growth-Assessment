@@ -11,9 +11,9 @@ def get_database_connection():
     Creates and returns a SQLAlchemy engine for connecting to the PostgreSQL database.
     Retrieves database credentials from the .env file.
     """
-    db_url = os.getenv("DB_URL_DATASET")
+    db_url = os.getenv("DB_URL_DASHBOARD")
     if not db_url:
-        raise EnvironmentError("DB_URL_DATASET environment variable not set.")
+        raise EnvironmentError("DB_URL_DASHBOARD environment variable not set.")
     
     return create_engine(db_url)
 
