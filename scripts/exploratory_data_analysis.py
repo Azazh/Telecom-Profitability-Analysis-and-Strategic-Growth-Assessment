@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from IPython.display import display
 
 class ExploratoryDataAnalysis:
     def __init__(self, filepath):
@@ -27,9 +28,9 @@ class ExploratoryDataAnalysis:
         """Describe all relevant variables and associated data types."""
         if self.dataset is not None:
             print("Dataset Information:\n")
-            print(self.dataset.info())
+            display(self.dataset.info())
             print("\nSummary Statistics:\n")
-            print(self.dataset.describe())
+            display(self.dataset.describe())
         else:
             print("Dataset not loaded. Please load the dataset first.")
 
@@ -52,7 +53,7 @@ class ExploratoryDataAnalysis:
             self.cleaned_data[column_name] = np.clip(
                 self.cleaned_data[column_name], lower_bound, upper_bound
             )
-            print(f"Outliers in '{column_name}' handled.")
+            display(f"Outliers in '{column_name}' handled.")
         else:
             print("Cleaned data not available. Please handle missing values first.")
 
@@ -68,7 +69,7 @@ class ExploratoryDataAnalysis:
             ) + 1
             decile_summary = self.cleaned_data.groupby('Decile Class')['Total Data'].sum()
             print("Decile summary computed successfully:")
-            print(decile_summary)
+            display(decile_summary)
         else:
             print("Cleaned data not available. Please handle missing values first.")
 
@@ -113,15 +114,7 @@ class ExploratoryDataAnalysis:
         )
         print("Decile segmentation completed.")
     
-    def save_decile_summary(self, output_file):
-        """
-        Save the decile summary to a CSV file.
-        """
-        if self.decile_summary is not None:
-            self.decile_summary.to_csv(output_file, index=False)
-            print(f"Decile summary saved to {output_file}.")
-        else:
-            print("Decile summary is not available. Please run the segmentation step first.")
+
 
     def clean_data(self):
         """
@@ -175,13 +168,13 @@ class ExploratoryDataAnalysis:
             std_dev = self.cleaned_data.std(numeric_only=True)
             
             # Display insights
-            print("=== Basic Metrics Analysis ===")
+            display("=== Basic Metrics Analysis ===")
             print("\nMean Values:")
-            print(mean_values)
+            display(mean_values)
             print("\nMedian Values:")
-            print(median_values)
+            display(median_values)
             print("\nStandard Deviation:")
-            print(std_dev)
+            display(std_dev)
             
             # Provide insights
             print("\n=== Insights ===")
@@ -226,8 +219,8 @@ class ExploratoryDataAnalysis:
                 plt.xlabel(column)
                 plt.show()
                 
-                print(f"\n=== Insights for {column} ===")
-                print(f"The histogram shows the distribution of {column}, while the boxplot highlights potential outliers.")
+                display(f"\n=== Insights for {column} ===")
+                display(f"The histogram shows the distribution of {column}, while the boxplot highlights potential outliers.")
         else:
             print("Cleaned data not available. Please clean the dataset first.")
     def univariate_analysis(self):
@@ -244,11 +237,11 @@ class ExploratoryDataAnalysis:
             # Print results
             print("=== Non-Graphical Univariate Analysis ===")
             print("\nRange Values:")
-            print(range_values)
+            display(range_values)
             print("\nVariance Values:")
-            print(variance_values)
+            display(variance_values)
             print("\nStandard Deviation Values:")
-            print(std_dev_values)
+            display(std_dev_values)
             
             # Interpretation
             print("\n=== Interpretation ===")
@@ -256,6 +249,8 @@ class ExploratoryDataAnalysis:
             print("2. **Variance and Standard Deviation**: Measure the variability in the dataset. High values suggest greater variation, while low values indicate uniformity.")
         else:
             print("Cleaned data not available. Please clean the dataset first.")
+
+
 
     def bivariate_analysis(self):
         """
@@ -274,8 +269,15 @@ class ExploratoryDataAnalysis:
             if "Total DL (Bytes)" in self.cleaned_data.columns and "Total UL (Bytes)" in self.cleaned_data.columns:
                 self.cleaned_data["Total Data"] = self.cleaned_data["Total DL (Bytes)"] + self.cleaned_data["Total UL (Bytes)"]
             
+            # Loop over each application and plot the bivariate analysis
             for app in app_columns:
                 if app in self.cleaned_data.columns:
+                    # Displaying the first few rows of the data for the current app vs Total Data
+                    app_data = self.cleaned_data[[app, "Total Data"]].head()  # Display only the first few for brevity
+                    print(f"Showing data for {app}:")
+                    display(app_data)  # Display the first few rows
+                    
+                    # Plotting the scatterplot
                     plt.figure(figsize=(10, 6))
                     sns.scatterplot(
                         x=self.cleaned_data[app],
@@ -290,6 +292,7 @@ class ExploratoryDataAnalysis:
                     print(f"Column '{app}' not found in the dataset.")
         else:
             print("Cleaned data not available. Please clean the dataset first.")
+
 
 
     def correlation_analysis(self):
@@ -307,7 +310,7 @@ class ExploratoryDataAnalysis:
             # Ensure columns exist in the dataset
             missing_columns = [col for col in columns if col not in self.cleaned_data.columns]
             if missing_columns:
-                print(f"Missing columns in the dataset: {missing_columns}")
+                display(f"Missing columns in the dataset: {missing_columns}")
                 return
 
             # Compute correlation matrix
@@ -315,7 +318,7 @@ class ExploratoryDataAnalysis:
             
             # Print correlation matrix
             print("\n=== Correlation Matrix ===")
-            print(correlation_matrix)
+            display(correlation_matrix)
             
             # Plot heatmap
             plt.figure(figsize=(10, 8))
@@ -348,7 +351,7 @@ class ExploratoryDataAnalysis:
             explained_variance = pca.explained_variance_ratio_
             print("\n=== PCA Explained Variance ===")
             for i, variance in enumerate(explained_variance):
-                print(f"Principal Component {i + 1}: {variance:.2%}")
+                display(f"Principal Component {i + 1}: {variance:.2%}")
             
             # Plot explained variance
             plt.figure(figsize=(10, 6))

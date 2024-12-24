@@ -7,6 +7,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
+from IPython.display import display
 
 class SatisfactionAnalyzer:
     def __init__(self, data):
@@ -91,15 +92,37 @@ class SatisfactionAnalyzer:
 
     def aggregate_scores(self):
         """
-        Aggregate average satisfaction and experience scores per cluster.
+        Aggregate average satisfaction and experience scores per cluster
+        and plot the results.
         """
+        # Aggregate average scores per cluster
         aggregated = self.dataset.groupby('Cluster').agg({
             'EngagementScore': 'mean',
             'ExperienceScore': 'mean',
             'SatisfactionScore': 'mean'
         })
+
         print("Aggregated scores per cluster:")
         print(aggregated)
+
+        # Plot the aggregated scores
+        self.plot_aggregated_scores(aggregated)
+
+    def plot_aggregated_scores(self, aggregated):
+        """
+        Plot aggregated scores per cluster.
+        """
+        aggregated.plot(kind='bar', figsize=(10, 6), colormap='viridis', edgecolor='black')
+
+        # Customize plot
+        plt.title("Average Scores per Cluster", fontsize=16)
+        plt.xlabel("Cluster", fontsize=14)
+        plt.ylabel("Average Score", fontsize=14)
+        plt.xticks(rotation=0, fontsize=12)
+        plt.legend(title="Metrics", fontsize=12)
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.tight_layout()
+        plt.show()
 
     def export_to_postgresql(self, host, database, user, password, table_name):
         """
@@ -135,7 +158,7 @@ class SatisfactionAnalyzer:
 
             # Commit the transaction
             connection.commit()
-            print(f"Data exported to PostgreSQL table '{table_name}' successfully.")
+            display(f"Data exported to PostgreSQL table '{table_name}' successfully.")
 
         except psycopg2.Error as e:
             print(f"An error occurred: {e}")

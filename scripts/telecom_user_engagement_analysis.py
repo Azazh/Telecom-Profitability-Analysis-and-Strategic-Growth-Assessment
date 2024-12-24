@@ -172,7 +172,7 @@ class TelecomUserEngagement:
 
     def plot_top_applications(self):
         """
-        Plot the top 3 most used applications.
+        Plot the top 3 most used applications and display the traffic values as text.
         """
         if self.app_traffic_data is None:
             raise ValueError("Application traffic has not been aggregated. Call 'aggregate_traffic_per_application()' first.")
@@ -183,10 +183,20 @@ class TelecomUserEngagement:
             'Youtube': self.app_traffic_data['Total Youtube Traffic (Bytes)'].sum()
         }
         
+        # Print the values in text output
+        for app, total in app_totals.items():
+            print(f"{app}: {total:,} Bytes")
+
         plt.figure(figsize=(10, 6))
-        plt.bar(app_totals.keys(), app_totals.values(), color=['blue', 'green', 'red'])
+        bars = plt.bar(app_totals.keys(), app_totals.values(), color=['blue', 'green', 'red'])
         plt.title("Top 3 Most Used Applications by Total Traffic")
         plt.ylabel("Total Traffic (Bytes)")
+        
+        # Annotate each bar with its value
+        for bar in bars:
+            yval = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width()/2, yval, f"{yval:,}", ha='center', va='bottom')  # Format with commas
+        
         plt.show()
 
 

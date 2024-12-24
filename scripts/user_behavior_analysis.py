@@ -1,10 +1,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from IPython.display import display
 
 class UserBehaviorAnalysis:
     def __init__(self, dataset_path):
         """Initialize the analysis class with the dataset."""
-        self.data = pd.read_csv(dataset_path)
+        self.data = dataset_path
         self.processed_data = None
 
     def aggregate_user_data(self):
@@ -85,22 +86,23 @@ class UserBehaviorAnalysis:
         # Total sessions and data volume
         total_sessions = self.processed_data["xdr_sessions"].sum()
         total_volume = self.processed_data["total_volume"].sum()
-        print(f"Total xDR Sessions: {total_sessions}")
-        print(f"Total Data Volume: {total_volume / 1e9:.2f} GB")
+        display(f"Total xDR Sessions: {total_sessions}")
+        display(f"Total Data Volume: {total_volume / 1e9:.2f} GB")
 
         # Top applications by data volume
         app_data = self.processed_data[
             ["social_media_data", "google_data", "email_data", "youtube_data", 
-             "netflix_data", "gaming_data", "other_data"]
+            "netflix_data", "gaming_data", "other_data"]
         ].sum().sort_values(ascending=False)
+        app_data_df = pd.DataFrame(app_data, columns=["Data Volume (GB)"])
+        app_data_df["Data Volume (GB)"] /= 1e9  # Convert to GB
         print("\nTop Applications by Data Volume:")
-        for app, volume in app_data.items():
-            print(f"{app}: {volume / 1e9:.2f} GB")
+        display(app_data_df)
 
         # Top 5 users by session duration
         top_users = self.processed_data.nlargest(5, "session_duration")
         print("\nTop 5 Users by Session Duration:")
-        print(top_users[["MSISDN/Number", "session_duration"]])
+        display(top_users[["MSISDN/Number", "session_duration"]])
 
 # Notebook Instructions
 # 1. Save the notebook as "user_behavior_overview.ipynb".
