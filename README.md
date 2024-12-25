@@ -135,4 +135,4 @@ Developed an interactive dashboard to visualize data insights:
 ---
 
 ### ⭐ **Acknowledgments**
-Special thanks to the investor for providing this opportunity and to the 10-x team for sharing the dataset.  
+Special thanks to the investor for providing this opportunity and to the 10-academy team for sharing the dataset.  
