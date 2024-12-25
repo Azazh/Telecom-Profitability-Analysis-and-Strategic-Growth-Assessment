@@ -1,4 +1,4 @@
-# TellCo Telecom Analysis and Dashboard Development
+# Telecom Profitability Analysis and Strategic Growth Assessment
 
 ## 📖 **Overview**
 This repository contains a comprehensive analysis and dashboard development project for  a telecommunications company. The goal is to identify business opportunities, analyze user behavior, and recommend strategies to enhance profitability and user satisfaction. The project uses data science techniques for exploratory data analysis (EDA), clustering, and regression modeling, culminating in a user-friendly dashboard for visualizing insights.
@@ -52,7 +52,7 @@ Developed an interactive dashboard to visualize data insights:
 ## 🛠 **Technologies Used**
 - **Programming Languages**: Python (Pandas, NumPy, Matplotlib, Seaborn, Scikit-learn)
 - **Database**: Postgresql
-- **Dashboard**: Dash/Streamlit
+- **Dashboard**: Streamlit
 - **Clustering**: K-Means
 - **Modeling**: Regression
 - **Data Handling**: Data Cleaning, Outlier Treatment, Normalization
@@ -135,4 +135,4 @@ Developed an interactive dashboard to visualize data insights:
 ---
 
 ### ⭐ **Acknowledgments**
-Special thanks to the investor for providing this opportunity and to the TellCo team for sharing the dataset.  
+Special thanks to the investor for providing this opportunity and to the 10-x team for sharing the dataset.  
